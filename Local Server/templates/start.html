@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Agro</title>
+    <style>
+      /* Gradient background with animation */
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: gradientBG 15s ease infinite;
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background: linear-gradient(135deg, #74ebd5, #9face6);
+        }
+
+        50% {
+          background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+        }
+
+        100% {
+          background: linear-gradient(135deg, #74ebd5, #9face6);
+        }
+      }
+
+      .container {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 30px 40px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 90%;
+        max-width: 400px;
+        animation: fadeIn 1.2s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      p {
+        color: #555;
+        margin-bottom: 20px;
+        font-size: 0.9em;
+      }
+
+      label {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-top: 10px;
+      }
+
+      input {
+        padding: 10px;
+        margin-top: 5px;
+        width: 100%;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: border-color 0.3s ease;
+      }
+
+      input:focus {
+        border-color: #74ebd5;
+        outline: none;
+        box-shadow: 0 0 5px rgba(116, 235, 213, 0.5);
+      }
+
+      button {
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 20px;
+        transition: transform 0.3s ease, background 0.3s ease;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(135deg, #9face6, #74ebd5);
+      }
+
+      #sectionInputs {
+        margin-top: 15px;
+      }
+
+      #sectionInputs label {
+        display: block;
+        margin-top: 10px;
+      }
+
+      input[type="text"] {
+        width: calc(100% - 20px);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Setup Your Farmland</h1>
+
+      <label for="numSections">No of Sections:</label>
+      <input
+        type="number"
+        id="numSections"
+        min="1"
+        placeholder="Enter a number"
+        oninput="generateInputs()"
+      />
+
+      <div id="sectionInputs"></div>
+
+      <button id="startBtn" onclick="sendCommand()">Start</button>
+    </div>
+
+    <script>
+      function generateInputs() {
+        const numSections = document.getElementById("numSections").value;
+        const sectionContainer = document.getElementById("sectionInputs");
+
+        // Store existing input values
+        const existingValues = {};
+        const inputs = sectionContainer.querySelectorAll('input[type="text"]');
+        inputs.forEach((input) => {
+          existingValues[input.id] = input.value;
+        });
+
+        // Clear previous inputs
+        sectionContainer.innerHTML = "";
+
+        // Generate new inputs
+        for (let i = 1; i <= numSections; i++) {
+          const sectionLabel = document.createElement("label");
+          sectionLabel.innerText = `Section ${i}`;
+
+          const sectionInput = document.createElement("input");
+          sectionInput.type = "text";
+          sectionInput.id = `section${i}`;
+          sectionInput.placeholder = `Enter name for Section ${i}`;
+
+          // Restore saved value if it exists
+          if (existingValues[sectionInput.id]) {
+            sectionInput.value = existingValues[sectionInput.id];
+          }
+
+          sectionContainer.appendChild(sectionLabel);
+          sectionContainer.appendChild(sectionInput);
+        }
+      }
+
+      function sendCommand() {
+        const numSections = document.getElementById("numSections").value;
+        let data = `initialization,${numSections}`;
+
+        for (let i = 1; i <= numSections; i++) {
+          const sectionInput = document.getElementById(`section${i}`).value;
+          if (sectionInput) {
+            data += `,${sectionInput}`;
+          } else {
+            data += `,Section${i}`;
+          }
+        }
+
+        console.log(data); // For demonstration purposes
+        // Call your function to send the data
+        //sendCommandToServer(data);  // Uncomment and implement your sending function
+
+        fetch("http://192.168.1.166:5000/app", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ command: data }),
+        }).then((response) => {
+          if (response.ok) {
+            window.location.href = "/home"; // Load start.html
+          }
+        });
+      }
+
+      function fetchData() {
+        fetch("http://192.168.1.166:5000/status") // Replace with your endpoint
+          .then((response) => response.json())
+          .then((data) => {
+            if (Object.keys(data).length !== 0) {
+              window.location.href = "/home"; // Load start.html
+            }
+          })
+          .catch((error) => console.error("Error fetching data:", error));
+      }
+
+      fetchData();
+    </script>
+  </body>
+</html>

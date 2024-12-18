@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growing Plant Animation</title>
+  <style>
+      /* Gradient background with animation */
+      body {
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+        /* Initial background */
+        animation: gradientBG 15s ease infinite;
+        /* Apply gradient animation */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background: linear-gradient(135deg, #74ebd5, #9face6);
+        }
+
+        50% {
+          background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+        }
+
+        100% {
+          background: linear-gradient(135deg, #74ebd5, #9face6);
+        }
+      }
+
+      .wrapper {
+        position: relative;
+        width: 600px;
+        height: 600px;
+      }
+
+      .box {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: none;
+      }
+
+      .pot {
+        position: absolute;
+        width: 20%;
+        height: 20%;
+        bottom: 0;
+        left: 40%;
+        background: #8D6E63;
+        -webkit-clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+        clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+        box-shadow: inset 0 16px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .pot-top {
+        position: absolute;
+        width: 22%;
+        height: 5%;
+        bottom: 17%;
+        left: 39%;
+        background: #5D4037;
+        border-radius: 3px;
+      }
+
+      .stem {
+        position: absolute;
+        width: 2%;
+        height: 50%;
+        left: 49%;
+        bottom: 17%;
+        background: #4CAF50;
+        animation: grow 2s linear infinite;
+      }
+
+      .leaf {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: #388E3C;
+        animation: leafGrow 2s linear infinite;
+      }
+
+      .leaf .line {
+        position: absolute;
+        width: 80%;
+        height: 1%;
+        background: rgba(0, 0, 0, 0.1);
+        top: 48%;
+      }
+
+      .leaf01 {
+        top: 70%;
+        left: 50%;
+        transform: rotate(-25deg);
+      }
+
+      .leaf02 {
+        top: 50%;
+        right: 50%;
+        transform: rotate(205deg);
+      }
+
+      .leaf03 {
+        top: 30%;
+        left: 50%;
+        transform: rotate(-25deg);
+      }
+
+      .leaf04 {
+        top: 20%;
+        right: 50%;
+        transform: rotate(205deg);
+      }
+
+      .leaf05 {
+        top: -17%;
+        left: -120%;
+        transform: rotate(-60deg);
+      }
+
+      .leaf06 {
+        top: -9%;
+        right: 22%;
+        transform: rotate(195deg);
+      }
+
+      @keyframes grow {
+        0% {
+          height: 0%;
+        }
+
+        50% {
+          height: 25%;
+        }
+
+        100% {
+          height: 50%;
+        }
+      }
+
+      @keyframes leafGrow {
+        0% {
+          width: 0%;
+          height: 0%;
+        }
+
+        50% {
+          width: 350%;
+          height: 5%;
+        }
+
+        100% {
+          width: 700%;
+          height: 10%;
+        }
+      }
+
+      .loading-bar {
+        position: absolute;
+        bottom: -30px;
+        left: 40%;
+        width: 20%;
+        height: 10px;
+        background: #D7CCC8;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .loading-bar::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 100%;
+        background: #66BB6A;
+        animation: loading 2s infinite;
+      }
+
+      @keyframes loading {
+        0% {
+          width: 0%;
+        }
+
+        50% {
+          width: 100%;
+        }
+
+        100% {
+          width: 0%;
+        }
+      }
+
+      .loading-text {
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        /* Move the text on top of the plant */
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 28px;
+        font-weight: bold;
+        color: #2E7D32;
+        /* Green to match the plant theme */
+        animation: fadeInOut 2s infinite;
+      }
+
+      @keyframes fadeInOut {
+
+        0%,
+        100% {
+          opacity: 0;
+        }
+
+        50% {
+          opacity: 1;
+        }
+      }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="box">
+      <div class="stem">
+        <div class="leaf leaf01">
+          <div class="line"></div>
+        </div>
+        <div class="leaf leaf02">
+          <div class="line"></div>
+        </div>
+        <div class="leaf leaf03">
+          <div class="line"></div>
+        </div>
+        <div class="leaf leaf04">
+          <div class="line"></div>
+        </div>
+        <div class="leaf leaf05">
+          <div class="line"></div>
+        </div>
+        <div class="leaf leaf06">
+          <div class="line"></div>
+        </div>
+      </div>
+      <div class="pot"></div>
+      <div class="pot-top"></div>
+      <div class="loading-bar"></div>
+    </div>
+
+    <div class="loading-text" onclick='start()' >Click here to Start</div> <!-- Moving the loading text here -->
+    
+  </div>
+
+  <script>
+    function forward(){
+      console.log("Fetching");
+      fetch('http://192.168.1.166:5000/status') // Example endpoint
+                .then(response => response.json())
+                .then(data => {
+                  if (Object.keys(data).length === 0){
+                    console.log("Start");
+                    window.location.href = '/start'; // Load start.html
+                  }else{
+                    console.log("Home");
+                    window.location.href = '/home'; // Load start.html
+                  }
+                })
+                .catch(err => window.location.href = '/noServer');
+    }
+    // Function to create a delay using Promise
+    function putStart() {
+      console.log("Clicked start");
+      // Send PUT request to start the server
+      fetch('http://192.168.1.166:5000/app', {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "command": "start" })
+      }).then(response => {
+        if (response.ok) {
+          forward()
+        } else {
+          alert("Error sending command");
+        }
+      })
+      .catch(err => window.location.href = '/noServer');
+    }
+
+    function start(){
+      putStart();
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        #offline {
+          position: relative; 
+          float: left;
+          color: red;
+          font-weight: bold;
+          margin-top: -40px;
+          font-size: 22px;
+        }
+
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            align-content: center;
+            text-align: center;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Overlay */
+            z-index: 999; /* To ensure it's above other content */
+
+          }
+
+          .popuph1 {
+            text-align: center;
+            margin-bottom: 20px;
+            /* Reduced space for compactness */
+            font-size: 2em;
+            color: #0066ff;
+          }
+
+      
+          .popup-content {
+            background-color: white;
+            width: 90%;
+            max-width: 400px;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+          }
+      
+          /* Close Button */
+          .close-btn {
+            background-color: #ff3333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+          }
+      
+          .close-btn:hover {
+            background-color: #e60000;
+          }
+
+
+
+
+
+
+
+
+        /* General Styling */
+        body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f4f9;
+        color: #333;
+        text-align: center;
+        }
+
+        header {
+        background: #4caf50;
+        color: white;
+        padding: 1rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+        font-size: 2.5rem;
+        margin: 0;
+        }
+
+        .container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        padding: 2rem;
+        }
+
+        .section-grid{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* Digital Screen Styling for Sensor Panel */
+        .sensor-panel {
+        flex: 1;
+        max-width: 400px;
+        text-align: left;
+        }
+
+        .sensor-panel h2 {
+        margin-bottom: 1rem;
+        color: #4caf50;
+        }
+
+        .digital-screen {
+        display: flex;
+        flex-direction: column;
+        background: #2c2c2c;
+        /* Slightly darker background for modern feel */
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        margin-top: 1rem;
+        color: #fff;
+        }
+
+        .screen-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #444;
+        margin: 0.5rem 0;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: inset 0 -2px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .screen-item h3 {
+        font-size: 1.1rem;
+        margin: 0;
+        color: #4caf50;
+        }
+
+        .screen-item p {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin: 0;
+        }
+
+        /* Gauges Panel Styling */
+        .gauges-panel {
+        flex: 2;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        }
+
+        .card {
+        cursor: pointer;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 280px;
+        padding: 1.5rem;
+        transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+        color: #4caf50;
+        }
+
+        .card_section {
+          width: fit-content;
+          margin-bottom: 20px;
+          margin-left: auto;
+          margin-right: auto;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          background: linear-gradient(90deg, #fdfbfb, #ebedee);
+          padding: 15px;
+          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+          justify-content: center;
+          align-items: center;
+        }
+
+        .card_section h2 {
+          width: fit-content;
+          height: fit-content;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .section h2 {
+          font-size: 1.5em;
+          /* Adjusted font size */
+          margin-bottom: 10px;
+          color: #0066ff;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+          width: fit-content;
+          height: fit-content;
+          padding: 10px;
+          margin-bottom: 15px;
+        }
+
+        .label {
+          font-size: 1em;
+          margin-bottom: 8px;
+          color: #333;
+          font-weight: bold;
+        }
+
+
+
+
+        .gauge {
+        position: relative;
+        width: 120px;
+        height: 200px;
+        border: 3px solid #ddd;
+        border-radius: 10px;
+        margin: 1rem auto;
+        background: #e0f7fa;
+        overflow: hidden;
+        }
+
+        .gauge-fill {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        transition: height 1s ease-in-out;
+        }
+
+        .gauge p {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+        }
+
+        .status {
+        margin-top: 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        }
+
+        .status.red {
+        color: #d32f2f;
+        /* Red for warnings */
+        }
+
+        .status.green {
+        color: #388e3c;
+        /* Green for normal status */
+        }
+
+        .warning {
+          font-weight: bold;
+          color: #d32f2f;
+          font-size: 1rem;
+          margin-top: 10px;
+          display: none;
+          /* Initially hidden */
+        }
+
+        /* Button Styling */
+        button {
+          margin-top: 1rem;
+          padding: 10px 20px;
+          font-size: 1rem;
+          background: #4caf50;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+          background: #45a049;
+          transform: translateY(-2px);
+        }
+
+        button:active {
+          background: #388e3c;
+          transform: translateY(0);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .sensor-panel {
+            cursor: pointer;
+            max-width: 500px;
+            min-width: 400px;
+        }
+
+        .digital-screen:hover {
+          box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3), -10px 10px 15px rgba(0, 0, 0, 0.3);
+          transform: translateY(-10px);
+          transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .update-link{
+          display: block;
+          position: absolute;
+          margin-top: -50px;
+          margin-left: 80%;
+        }
+
+        .popup_input,
+        .popup_button {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup_input {
+            width: 100%;
+            background: #f9f9f9;
+        }
+
+        /* Button Styles */
+        .popup_button {
+            width: auto;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 20px;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(90deg, #34d058, #28a745);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .popup_button:hover {
+            background: linear-gradient(90deg, #28a745, #218838);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Two-Column Layout */
+        .two-column {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            /* Align buttons to the same level */
+            justify-content: space-between;
+            /* Distribute space */
+        }
+
+        .two-column input {
+            flex: 2;
+            /* Make input take more space if needed */
+        }
+
+        .two-column button {
+            flex: 1;
+            /* Buttons take equal space */
+        }
+
+
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .gauges-panel {
+            justify-content: center;
+        }
+
+        
+        }
+
+        @media (max-width: 480px) {
+        h1 {
+            font-size: 2rem;
+        }
+
+        button {
+            font-size: 0.9rem;
+        }
+
+        .gauge {
+            width: 100px;
+            height: 160px;
+        }
+
+        .gauge p {
+            font-size: 1rem;
+        }
+
+        .popup {
+          max-width: 100%;
+          padding: 15px;
+        }
+
+        .popuph1 {
+            font-size: 1.5em;
+        }
+
+        .card_section h2 {
+            font-size: 1.2em;
+        }
+
+        }
+      </style>
+</head>
+<body>
+  <header>
+      <h1>Smart Agro Dashboard</h1>      
+      <div id="offline" >Sever offline...</div>
+      <div class="update-link">
+        <a href="/update"><p>Add or Remove sections</p></a>
+        <a href="/historicalData"><p>View Historical Data</p></a>
+      </div>
+    </header>
+    <div id="popup_tank" class="popup">
+        <h1 class="popuph1">🌱 Smart Agriculture Control Panel</h1>
+        <!-- Threshold Level -->
+        <div class="card_section">
+            <h2>Threshold Level</h2>
+            <div class="input-group">
+                <label class="label" for="threshold">Set Threshold Level (1-99):</label>
+                <input class="popup_input" type="number" id="tank_threshold" min="1" max="99" placeholder="Enter value">
+                <button id="tank_popup_button" class="popup_button">Update Threshold</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup_details" class="popup">
+      <h1>🌱 Smart Agriculture Control Panel</h1>
+
+      <!-- Water Valve Control -->
+      <div class="card_section">
+          <h2>Water Valve Control</h2>
+          <div class="two-column">
+              <input id="waterTime" min="10" type="number" placeholder="Set Open Time (seconds)">
+              <button id="waterOpenBtn">Open Valve</button>
+              <button id="waterCloseBtn">Close Valve</button>
+          </div>
+      </div>
+
+      <!-- Fertilizer Valve Control -->
+      <div class="card_section">
+          <h2>Fertilizer Valve Control</h2>
+          <div class="two-column">
+              <input id="fertilizerTime" min="10" type="number" placeholder="Set Open Time (seconds)">
+              <button id="fertilizerOpenBtn">Open Valve</button>
+              <button id="fertilizerCloseBtn">Close Valve</button>
+          </div>
+      </div>
+
+      <!-- Name Change -->
+      <div class="card_section">
+          <h2>Change Name</h2>
+          <div class="input-group">
+              <input id="newName" type="text" placeholder="Enter new name">
+              <button id="nameSubmitBtn">Update Name</button>
+          </div>
+      </div>
+
+      <!-- Mode Selection -->
+      <div class="card_section">
+          <h2>Mode Selection</h2>
+          <div class="two-column">
+              <button id="modeAutoButton">Auto Mode</button>
+              <button id="modeManualButton">Manual Mode</button>
+          </div>
+      </div>
+
+      <!-- Time Settings -->
+      <div class="card_section">
+          <h2>Set Times</h2>
+          <div class="input-group">
+              <input id="mst" type="time" placeholder="Morning Start">
+              <input id="met" type="time" placeholder="Morning End">
+              <input id="est" type="time" placeholder="Evening Start">
+              <input id="eet" type="time" placeholder="Evening End">
+              <button id="timeBtn">Update Times</button>
+          </div>
+      </div>
+
+      <!-- Environmental Threshold Levels -->
+      <div class="card_section">
+          <h2>Environmental Threshold Levels</h2>
+          <div class="input-group">
+              <input id="HT" type="number" placeholder="Humidity Threshold">
+              <input id="LT" type="number" placeholder="Light Threshold">
+              <input id="MT" type="number" placeholder="Moisture Threshold">
+              <button id="thresholdUpdateBtn" >Update Levels</button>
+          </div>
+      </div>
+    </div>
+    <main id="main_ui">
+        <div class="container">
+          <div class="gauges-panel">
+            <div class="card" onclick="openPopupWater()">
+              <h2>Water Level</h2>
+              <div class="gauge">
+                <div id="waterGauge" class="gauge-fill"></div>
+                <p id="waterPercentage">0%</p>
+              </div>
+              <p id="waterWarning" class="warning">⚠️ Water level is low!</p>
+            </div>
+            <div class="card" onclick="openPopupFertilizer()">
+              <h2>Fertilizer Level</h2>
+              <div class="gauge">
+                <div id="fertilizerGauge" class="gauge-fill"></div>
+                <p id="fertilizerPercentage">0%</p>
+              </div>
+              <p id="fertilizerWarning" class="warning">
+                ⚠️ Fertilizer level is critically low!
+              </p>
+            </div>
+          </div>
+          <div id="section-container" class="section-grid">
+            <div class="sensor-panel" style="display:none;">
+                <h2 id="name">Sensor Readings</h2>
+                <div class="digital-screen">
+                  <div class="screen-item">
+                    <h3>Mode</h3>
+                    <p id="modeStatus">Auto</p>
+                  </div>
+                  <div class="screen-item">
+                    <h3>Soil Moisture</h3>
+                    <p id="soilMoisture">45%</p>
+                  </div>
+                  <div class="screen-item">
+                    <h3>Humidity</h3>
+                    <p id="humidity">60%</p>
+                  </div>
+                  <div class="screen-item">
+                    <h3>Temperature</h3>
+                    <p id="temperature">25°C</p>
+                  </div>
+                  <div class="screen-item">
+                    <h3>Light Intensity</h3>
+                    <p id="lightIntensity">3000 lux</p>
+                  </div>
+                  <div class="screen-item">
+                    <h3>Water Valve Status</h3>
+                    <p id="waterValveStatus" class="status">Valve: Closed</p>
+                  </div>
+                  <div class="screen-item">
+                    <h3>Fertilizer Valve Status</h3>
+                    <p id="fertilizerValveStatus" class="status">Valve: Closed</p>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <!--<button id="updateButton">Update Readings</button> -->
+    </main>
+    <div id="dataContainer">
+        <!-- Dynamically updated content -->
+    </div>
+
+    
+    <script>
+      // Public variables to store data and references
+      let fetchedData = {}; // To store fetched JSON data
+      let sectionReferences = []; // To store references of created sections
+      var popup = document.getElementById('section-container');
+      var reload = true;
+
+
+      // Fetch data and save it to the public variable
+      function fetchData() {
+        const offlineText = document.getElementById("offline");
+        try{
+          fetch('http://192.168.1.166:5000/status') // Replace with your endpoint
+          .then(response => response.json())
+          .then(data => {
+            offlineText.style.display = "none";
+              if (Object.keys(data).length === 0){
+                console.log("Go To Start");
+                window.location.href = '/start'; // Load start.html
+              }else{
+                  fetchedData = data; // Save fetched data
+                  createSections(data.noOfSections); // Create sections dynamically
+                  updateSectionValues(); // Update section values
+              }
+          })
+          .catch((error) => {
+            reload = false;
+            offlineText.style.display = "block";
+            console.error('Error fetching data:', error);
+            createSectionsAndInserData();
+          });
+        }catch(error){
+          console.error(error)
+        }
+      }
+    
+      // Fetch data and call update
+      function fetchDataAndUpdate() {
+        if(reload){
+          try{
+            fetch('http://192.168.1.166:5000/status') // Example endpoint
+                .then(response => response.json())
+                .then(data => {
+                    if (Object.keys(data).length === 0){
+                        window.location.href = '/start'; // Load start.html
+                    }else{
+                        //const container = document.getElementById('dataContainer');
+                        //container.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                        fetchedData = data; // Save fetched data
+                        updateSectionValues(); // Update section values
+                    }                    
+              })
+              .catch((error) => console.error('Error fetching data:', error));
+            }catch(error){
+              console.error(error)
+            }
+        }
+        
+      }
+
+      // Function to create duplicate sections dynamically
+      function createSections(noOfSections) {
+        const container = document.querySelector('.section-grid');
+        sectionReferences = []; // Clear previous references
+    
+        // Remove existing dynamic sections
+        const existingSections = container.querySelectorAll('.sensor-panel.dynamic');
+        existingSections.forEach((section) => section.remove());
+    
+        // Create new sections
+        for (let i = 0; i < noOfSections; i++) {
+          const original = document.querySelector('.sensor-panel'); // Original element
+          const clone = original.cloneNode(true); // Deep copy
+          clone.style.display = "block";
+          clone.classList.add('dynamic'); // Mark as dynamic
+          clone.querySelector('#name').textContent = fetchedData[i]?.name || `Section ${i + 1}`;
+          container.appendChild(clone); // Append to the container
+          clone.addEventListener('click', function() {
+              openPopup(fetchedData[i]);
+            });
+          sectionReferences.push(clone); // Save reference
+        }
+      }
+
+      const createSectionsAndInserData = async () => {
+        try {
+          const landDataResponse = await fetch('/smartAgroAPI/models');
+          const lastLandData = await LandData.findOne({ order: [['id', 'DESC']] });
+      
+          if (!lastLandData) {
+            console.log("No data found in LandData.");
+            return;
+          }
+      
+          const numSections = lastLandData.noOfSections;
+      
+          const sections = await Sections.findAll({
+            order: [['id', 'DESC']],
+            limit: numSections,
+          });
+      
+          // Loop through the sections
+          for (const section of sections) {
+            const original = document.querySelector('.sensor-panel'); // Original element
+            const clone = original.cloneNode(true); // Deep copy
+            clone.style.display = "block";
+            clone.classList.add('dynamic'); // Mark as dynamic
+            clone.querySelector('#name').textContent = section.name;
+            container.appendChild(clone); // Append to the container
+      
+            // Update sensor values
+            clone.querySelector('#name').textContent = section.name;
+            clone.querySelector('#soilMoisture').textContent = section.latestMoisture + '%';
+            clone.querySelector('#humidity').textContent = section.latestHumidity + '%';
+            clone.querySelector('#temperature').textContent = section.latestTemperature
+            clone.querySelector('#lightIntensity').textContent = section.latestLight + ' lux'; // Simulate light intensity
+      
+            // Update valve statuses
+            const waterValveStatus = clone.querySelector('#waterValveStatus');
+            waterValveStatus.textContent = section.water_valve_status ? 'Valve: Open' : 'Valve: Closed';
+            waterValveStatus.className = `status ${section.water_valve_status ? 'red' : 'green'}`;
+      
+            const fertilizerValveStatus = clone.querySelector('#fertilizerValveStatus');
+            fertilizerValveStatus.textContent = section.fertilizer_valve_status ? 'Valve: Open' : 'Valve: Closed';
+            fertilizerValveStatus.className = `status ${section.fertilizer_valve_status ? 'red' : 'green'}`;
+      
+            // Update mode
+            const modeStatus = clone.querySelector('#modeStatus');
+            modeStatus.textContent = section.mode;
+            modeStatus.className = `status ${section.mode==="Manual" ? 'red' : 'green'}`;
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+    
+      // Function to update values of created sections
+      function updateSectionValues() {
+        sectionReferences.forEach((section, index) => {
+          const sectionData = fetchedData[index]; // Get data for this section
+          if (!sectionData) return; // Skip if data is missing
+    
+          // Update sensor values
+          section.querySelector('#name').textContent = sectionData.name;
+          section.querySelector('#soilMoisture').textContent = sectionData.latestMoisture + '%';
+          section.querySelector('#humidity').textContent = sectionData.latestHumidity + '%';
+          section.querySelector('#temperature').textContent = sectionData.latestTemperature
+          section.querySelector('#lightIntensity').textContent = sectionData.latestLight + ' lux'; // Simulate light intensity
+    
+          // Update valve statuses
+          const waterValveStatus = section.querySelector('#waterValveStatus');
+          waterValveStatus.textContent = sectionData.water_valve_status ? 'Valve: Open' : 'Valve: Closed';
+          waterValveStatus.className = `status ${sectionData.water_valve_status ? 'red' : 'green'}`;
+    
+          const fertilizerValveStatus = section.querySelector('#fertilizerValveStatus');
+          fertilizerValveStatus.textContent = sectionData.fertilizer_valve_status ? 'Valve: Open' : 'Valve: Closed';
+          fertilizerValveStatus.className = `status ${sectionData.fertilizer_valve_status ? 'red' : 'green'}`;
+
+          // Update mode
+          const modeStatus = section.querySelector('#modeStatus');
+          modeStatus.textContent = sectionData.mode;
+          modeStatus.className = `status ${sectionData.mode==="Manual" ? 'red' : 'green'}`;
+          //console.log(modeStatus.className);
+        });
+
+        // Update water level and valve status
+          const waterGauge = document.getElementById("waterGauge");
+          const waterPercentage = document.getElementById("waterPercentage");
+          const waterWarning = document.getElementById("waterWarning");
+
+          waterGauge.style.height = `${fetchedData.waterLevel}%`;
+          waterPercentage.textContent = fetchedData.waterLevel + "%";
+
+          // Show water warning if level is low
+          if (fetchedData.waterLevel < fetchedData.thresholdWaterLevel) {
+            waterWarning.style.display = "block";
+            waterGauge.style.backgroundColor = "#ff4c50"
+          } else {
+            waterWarning.style.display = "none";
+            waterGauge.style.backgroundColor = "#4caf50"
+          }
+
+          // Update fertilizer level and valve status
+          const fertilizerGauge = document.getElementById("fertilizerGauge");
+          const fertilizerPercentage = document.getElementById("fertilizerPercentage");
+          const fertilizerWarning = document.getElementById("fertilizerWarning");
+
+          fertilizerGauge.style.height = `${fetchedData.fertilizerLevel}%`;
+          fertilizerPercentage.textContent = fetchedData.fertilizerLevel + "%";
+
+          // Show fertilizer warning if level is critically low
+          if (fetchedData.fertilizerLevel < fetchedData.thresholdFertilizerLevel) {
+            fertilizerWarning.style.display = "block";
+            fertilizerGauge.style.backgroundColor = "#ff4c50"
+          } else {
+            fertilizerWarning.style.display = "none";
+            fertilizerGauge.style.backgroundColor = "#4caf50"
+          }
+
+      }
+    
+      function sendCommandToServer(data){
+        try{
+          fetch('http://192.168.1.166:5000/app', {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ "command": data })
+          }).then(response => {
+              if (response.ok) {
+                  window.location.href = '/home'; 
+              }
+          });
+        }catch(error){
+          console.error(error)
+        }
+      }
+      
+      // Initialize data fetching
+      fetchData();
+    
+      // Set periodic updates
+      setInterval(fetchDataAndUpdate, 5000); // Update every 5 seconds
+
+      function openPopupWater() {
+        popup = document.getElementById('popup_tank');
+        const popupBtn = document.getElementById('tank_popup_button');
+        const threshold = document.getElementById('tank_threshold');
+        popup.style.display = 'block'; // Show the popup
+        threshold.value = parseInt(fetchedData.thresholdWaterLevel);
+        popupBtn.onclick = function(event){
+          if(threshold.value.length != 0){
+            sendCommandToServer(`water,${threshold.value}`);
+          }
+        }
+      }
+
+      function openPopupFertilizer() {
+        popup = document.getElementById('popup_tank');
+        const popupBtn = document.getElementById('tank_popup_button');
+        const threshold = document.getElementById('tank_threshold');
+        popup.style.display = 'block'; // Show the popup
+
+        threshold.value = parseInt(fetchedData.thresholdFertilizerLevel);
+        popupBtn.onclick = function(event){
+          if(threshold.value.length != 0){
+            sendCommandToServer(`fertilizer,${threshold.value}`);
+          }
+        }
+      }
+
+      function cfWaterValue(number, water_valve_status){
+        const timeInput = document.getElementById("waterTime");
+        const openBtn = document.getElementById("waterOpenBtn");
+        const closeBtn = document.getElementById("waterCloseBtn");
+        if(water_valve_status){
+          openBtn.style.display = 'none';
+          timeInput.style.display = 'none';
+          closeBtn.style.display = 'block';
+        }else{
+          openBtn.style.display = 'block';
+          timeInput.style.display = 'block';
+          closeBtn.style.display = 'none';
+        }
+
+        //"open water,0,10"
+        openBtn.onclick = function(event){
+          if(timeInput.value!==""){
+            sendCommandToServer(`open water,${number},${parseInt(timeInput.value)}`);
+            openBtn.style.display = 'none';
+            timeInput.style.display = 'none';
+            closeBtn.style.display = 'block';
+          }
+        }
+        
+        //"close water,0"
+        closeBtn.onclick = function(event){
+          sendCommandToServer(`close water,${number}`);
+          openBtn.style.display = 'block';
+          timeInput.style.display = 'block';
+          closeBtn.style.display = 'none';
+          
+        }
+      }
+
+      function cfFertilizerValue(number, fertilizer_valve_status){
+        const timeInput = document.getElementById("fertilizerTime");
+        const openBtn = document.getElementById("fertilizerOpenBtn");
+        const closeBtn = document.getElementById("fertilizerCloseBtn");
+        if(fertilizer_valve_status){
+          openBtn.style.display = 'none';
+          timeInput.style.display = 'none';
+          closeBtn.style.display = 'block';
+        }else{
+          openBtn.style.display = 'block';
+          timeInput.style.display = 'block';
+          closeBtn.style.display = 'none';
+        }
+
+        //"open fertilizer,0,10"
+        openBtn.onclick = function(event){
+          if(timeInput.value!==""){
+            sendCommandToServer(`open fertilizer,${number},${parseInt(timeInput.value)}`);
+            openBtn.style.display = 'none';
+            timeInput.style.display = 'none';
+            closeBtn.style.display = 'block';
+          }
+        }
+        
+        //"close fertilizer,0"
+        closeBtn.onclick = function(event){
+          sendCommandToServer(`close fertilizer,${number}`);
+          openBtn.style.display = 'block';
+          timeInput.style.display = 'block';
+          closeBtn.style.display = 'none';
+          
+        }
+      }
+
+      function cfName(number, name){
+        const nameInput = document.getElementById("newName");
+        const submitBtn = document.getElementById("nameSubmitBtn");
+        nameInput.value = name;
+        submitBtn.onclick = function(event){
+          if(nameInput.value!==""){
+            //"change name,0,name"
+            sendCommandToServer(`change name,${number},${nameInput.value}`);
+          }else{
+            alert("Please insert name");
+          }
+        }
+      }
+
+      function cfMode(number, mode){
+        const autoBtn = document.getElementById("modeAutoButton");
+        const manualBtn = document.getElementById("modeManualButton");
+        if(mode==="Auto"){
+          autoBtn.style.display = 'none';
+          manualBtn.style.display = 'block';
+        }else{
+          autoBtn.style.display = 'block';
+          manualBtn.style.display = 'none';
+        }
+
+        //"change mode,0,Auto"
+        autoBtn.onclick = function(event){
+          sendCommandToServer(`change mode,${number},Auto`);
+          autoBtn.style.display = 'none';
+          manualBtn.style.display = 'block';
+        }
+        
+        //"change mode,0,Manual"
+        manualBtn.onclick = function(event){
+          sendCommandToServer(`change mode,${number},Manual`);
+          autoBtn.style.display = 'block';
+          manualBtn.style.display = 'none';
+          
+        }
+        
+      }
+
+      function cfTime(number, morning_start, morning_end, evening_start, evening_end){
+        const mst = document.getElementById("mst");
+        const met = document.getElementById("met");
+        const est = document.getElementById("est");
+        const et = document.getElementById("et");
+        const timeBtn = document.getElementById("timeBtn");
+        
+        mst.value = morning_start; 
+        met.value = morning_end; 
+        est.value = evening_start; 
+        eet.value = evening_end; 
+        
+        //"set times,0,morning_start,morning_end,evening_start,evening_end"
+        timeBtn.onclick = function(event){
+          if(mst.value!=="" && met.value!=="" && est.value!=="" && eet.value!==""){
+            sendCommandToServer(`set times,${number},${mst.value},${met.value},${est.value},${eet.value}`);
+          }else{
+            alert("Fill give all four times.")
+          }
+        }
+      }
+
+      function cfThreshold(number, humidityThreshold, moistureThreshold, maxWateringLight){
+        const HT = document.getElementById("HT");
+        const LT = document.getElementById("LT");
+        const MT = document.getElementById("MT");
+        const thresholdUpdateBtn = document.getElementById("thresholdUpdateBtn");
+        
+        HT.value = humidityThreshold; 
+        MT.value = moistureThreshold; 
+        LT.value = maxWateringLight;
+        
+        //"threshold,0,humidity,soil,light"
+        thresholdUpdateBtn.onclick = function(event){
+          if(HT.value!=="" && MT.value!=="" && LT.value!==""){
+            sendCommandToServer(`threshold,${number},${HT.value},${MT.value},${LT.value}`);
+          }else{
+            alert("Fill give all 3 thresholds.")
+          }
+        }
+        
+      }
+
+      function scrollToTop(){
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth' // This makes the scroll smooth
+        });
+      }
+
+      // Function to open popup and show the clicked section's name
+      function openPopup(data) {
+        scrollToTop();
+        popup = document.getElementById('popup_details');
+        popup.style.position = 'absolute';
+        popup.style.display = 'block'; // Show the popup
+        document.getElementById("main_ui").style.display = 'none';
+        popup.style.backgroundColor = 'rgba(0,0,0,0)';
+
+        // cf = change function
+        cfWaterValue(data.number, data.water_valve_status);
+        cfFertilizerValue(data.number, data.fertilizer_valve_status);
+        cfName(data.number, data.name);
+        cfMode(data.number, data.mode);
+        cfTime(data.number, data.morning_start, data.morning_end, data.evening_start, data.evening_end);
+        cfThreshold(data.number, data.humidityThreshold, data.moistureThreshold, data.maxWateringLight);
+        //popupText.textContent = `You clicked on ${sectionId}`; // Display section ID in popup
+      }
+
+      // Close the popup
+      function closePopup() {
+        popup.style.display = 'none';
+      }
+  
+      // Close the popup if the user clicks outside the popup content
+      window.onclick = function(event) {
+        // var popup = document.getElementById('popup');
+        if (event.target == popup) {
+          document.getElementById("main_ui").style.display = 'block';
+          closePopup();
+        }
+      }
+
+    </script>
+      
+  </body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Agro</title>
+  <style>
+    /* Gradient background with animation */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+      min-height: 100vh;
+      margin: 0;
+      animation: gradientBG 15s ease infinite;
+    }
+    
+    .Details {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+      }
+
+      50% {
+        background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+      }
+
+      100% {
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+    }
+
+    label {
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input {
+      padding: 10px;
+      margin-top: 5px;
+      width: 100%;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #74ebd5;
+      outline: none;
+      box-shadow: 0 0 5px rgba(116, 235, 213, 0.5);
+    }
+
+    button {
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(135deg, #9face6, #74ebd5);
+    }
+
+    #sectionInputs {
+      margin-top: 15px;
+    }
+
+    #sectionInputs label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      width: calc(100% - 20px);
+    }
+
+    .remove-button{
+      background-color: red;
+      padding: 5px 32px;
+      height: fit-content;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      margin-left: auto;
+    }
+
+    .remove-button:hover{  
+      padding: 1px 22px;
+      margin-top: 18px;
+      margin-right: 5px;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 30px 40px;
+      margin: 50px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      animation: fadeIn 1.2s ease;
+    }
+
+    .single-sections {
+      display: flex;
+      flex: 1;
+      height: 50px;
+      border-bottom: solid 1px black;
+      vertical-align:middle
+    }
+
+    .section-name {
+      display: flex;
+    }
+
+    .back_button {
+      border: solid 2px black;
+      border-radius: 10px;
+      width: fit-content;
+      padding: 5px 10px;
+      margin-left: 20px;
+      background: linear-gradient(135deg, #09f859, #d6d4ce);
+      animation: gradientBG 15s ease infinite;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="home"><p class="back_button"><--Back</p></a>
+  <div class="Details">
+    <div class="container">
+      <h1>Exsiting Sections</h1>
+      <div class="Exsiting-Sections">
+        <div class="single-sections" style="display: none;">
+          <p id="section-name" class="section-name">Section1</p>
+          <p id="remove-button" class="remove-button">Remove</p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <h1>Add Sections</h1>
+      
+      <label for="numSections">No of Sections:</label>
+      <input type="number" id="numSections" min="1" placeholder="Enter a number" oninput="generateInputs()">
+  
+      <div id="sectionInputs"></div>
+  
+      <button id="startBtn" onclick="sendCommand()">Start</button>
+    </div>
+  </div>
+
+  <script>
+    let fetchedData = {}; // To store fetched JSON data
+
+    function generateInputs() {
+      const numSections = document.getElementById('numSections').value;
+      const sectionContainer = document.getElementById('sectionInputs');
+
+      // Store existing input values
+      const existingValues = {};
+      const inputs = sectionContainer.querySelectorAll('input[type="text"]');
+      inputs.forEach((input) => {
+        existingValues[input.id] = input.value;
+      });
+
+      // Clear previous inputs
+      sectionContainer.innerHTML = '';
+
+      // Generate new inputs
+      for (let i = 1; i <= numSections; i++) {
+        const sectionLabel = document.createElement('label');
+        sectionLabel.innerText = `Section ${i}`;
+
+        const sectionInput = document.createElement('input');
+        sectionInput.type = 'text';
+        sectionInput.id = `section${i}`;
+        sectionInput.placeholder = `Enter name for Section ${i}`;
+
+        // Restore saved value if it exists
+        if (existingValues[sectionInput.id]) {
+          sectionInput.value = existingValues[sectionInput.id];
+        }
+
+        sectionContainer.appendChild(sectionLabel);
+        sectionContainer.appendChild(sectionInput);
+      }
+    }
+    
+    function sendCommand() {
+      var numOfExsiting = 0;
+      var numNew = 0;
+      if (Object.keys(globalDictionary).length != ""){
+        numOfExsiting = Object.keys(globalDictionary).length;
+      }
+      if (document.getElementById('numSections').value != ""){
+        numNew = document.getElementById('numSections').value;
+      }
+      console.log("numOfExsiting " + numOfExsiting);
+      console.log("numNew" + numNew);
+      const numSections = parseInt(numOfExsiting) + parseInt(numNew);
+      let data = `update,,,${numSections}`;
+
+      for (const key in globalDictionary) {
+        console.log(`${key} ->`, globalDictionary[key]);
+        data += `,${fetchedData[key].name},${fetchedData[key].humidityThreshold},${fetchedData[key].moistureThreshold},${fetchedData[key].maxWateringLight},${fetchedData[key].mode},${fetchedData[key].morning_start},${fetchedData[key].morning_end},${fetchedData[key].evening_start},${fetchedData[key].evening_end}`;
+      }
+    
+      for (let i = 1; i <= numNew; i++) {
+        const sectionInput = document.getElementById(`section${i}`).value;
+        if (sectionInput) {
+          data += `,${sectionInput},,,,,,,,`;
+        } else {
+          data += `,Section${i},,,,,,,,`;
+        }
+      }
+    
+      console.log(data); // For demonstration purposes
+      // Call your function to send the data
+      //sendCommandToServer(data);  // Uncomment and implement your sending function
+
+      fetch('http://192.168.1.166:5000/app', {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ "command": data })
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/home'; // Load start.html
+            }
+        });
+
+        window.location.href = '/home';
+        
+    }
+
+    function addSections(noOfSections) {
+      clearAll();
+      // Create new sections
+      for (let i = 0; i < noOfSections; i++) {
+        insertData(i,  fetchedData[i].name);
+      }
+      createSections();
+    }
+
+    function createSections() {
+      const container = document.querySelector('.Exsiting-Sections');
+      sectionReferences = []; // Clear previous references
+  
+      // Remove existing dynamic sections
+      const existingSections = container.querySelectorAll('.single-sections.dynamic');
+      existingSections.forEach((section) => section.remove());
+  
+      for (const key in globalDictionary) {
+        /*original = document.createElement('div');
+        original.className = 'single-sections';
+        original.innerHTML = `
+            <p id="section-name"></p>
+            <p id="remove-button">Remove</p>`;
+        container.appendChild(original);
+        original.classList.add('dynamic'); // Mark as dynamic
+        original.querySelector('#section-name').textContent = key || `Section ${i + 1}`;
+        original.querySelector('#remove-button').addEventListener('click', function() {
+          removeData(key);
+          createSections();
+        });*/
+
+        const original = document.querySelector('.single-sections'); // Original element
+        const clone = original.cloneNode(true); // Deep copy
+        clone.style.display = "flex";
+        clone.classList.add('dynamic'); // Mark as dynamic
+        container.appendChild(clone); // Append to the container
+        clone.querySelector('#section-name').textContent = globalDictionary[key] || `Section ${i + 1}`;
+        clone.querySelector('#remove-button').addEventListener('click', function() {
+          removeData(key);
+          createSections();
+        });
+
+        
+      }
+    }
+
+    function fetchData() {
+      fetch('http://192.168.1.166:5000/status') // Replace with your endpoint
+        .then((response) => response.json())
+        .then((data) => {
+          if (Object.keys(data).length === 0){
+            window.location.href = '/start'; // Load start.html
+          }else{
+            fetchedData = data; // Save fetched data
+            addSections(data.noOfSections); // Create sections dynamically
+          }
+        })
+        .catch((error) => console.error('Error fetching data:', error));
+    }
+
+    fetchData();
+
+
+    // code for manage existing sections
+    const globalDictionary = {};
+
+    function insertData(key, value) {
+      if (typeof value === 'string' || typeof value === 'number' || Array.isArray(value) || typeof value === 'object') {
+          globalDictionary[key] = value;
+          console.log(`Inserted: ${key} ->`, value);
+      } else {
+          console.log(`Value type ${typeof value} is not supported.`);
+      }
+    }
+
+    function removeData(key) {
+      if (key in globalDictionary) {
+          const removedValue = globalDictionary[key];
+          delete globalDictionary[key];
+          console.log(`Removed: ${key} ->`, removedValue);
+      } else {
+          console.log(`Key '${key}' not found.`);
+      }
+    }
+
+    function clearAll() {
+      for (const key in globalDictionary) {
+          delete globalDictionary[key];
+      }
+      console.log("All data cleared.");
+    }
+
+
+  </script>
+</body>
+
+</html>

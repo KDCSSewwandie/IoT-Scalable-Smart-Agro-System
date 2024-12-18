@@ -1,0 +1,13 @@
+cd Django
+
+.\venv\Scripts\activate
+
+cd .\smart_agro\
+
+python .\manage.py runserver 127.0.0.1:80
+
+
+
+
+
+python server.py
